@@ -1,0 +1,32 @@
+[
+  {
+    "module_title": "Handling Refund Requests",
+    "module_description": "Basic refund and order issue handling",
+    "category": "refunds",
+    "difficulty": "easy",
+    "question_text": "A customer says they were charged twice for the same order. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the issue, apologize, confirm the order details, explain that you will review the duplicate charge, and provide the next steps or escalation path.",
+    "rubric": [
+      "shows empathy",
+      "apologizes clearly",
+      "confirms order details",
+      "explains next steps",
+      "keeps a professional tone"
+    ]
+  },
+  {
+    "module_title": "Shipping Delays",
+    "module_description": "Handling order delivery problems",
+    "category": "shipping",
+    "difficulty": "easy",
+    "question_text": "A customer says their package is late and they are upset. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge frustration, apologize, check the shipment, explain the current status, and offer a concrete next step.",
+    "rubric": [
+      "shows empathy",
+      "apologizes",
+      "checks status",
+      "offers next step",
+      "remains calm and professional"
+    ]
+  }
+]
