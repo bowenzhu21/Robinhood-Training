@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
+import { loadEnvConfig } from "@next/env";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
@@ -21,8 +22,6 @@ type ModuleRow = {
   id: string;
   title: string;
   description: string | null;
-  category: string | null;
-  difficulty: string | null;
 };
 
 function required(name: string) {
@@ -36,6 +35,8 @@ function required(name: string) {
 }
 
 async function main() {
+  loadEnvConfig(process.cwd());
+
   const supabase = createClient(required("NEXT_PUBLIC_SUPABASE_URL"), required("SUPABASE_SERVICE_ROLE_KEY"));
   const seedFilePath = path.join(process.cwd(), "training-questions.json");
   const raw = await readFile(seedFilePath, "utf8");
@@ -46,8 +47,6 @@ async function main() {
     {
       title: string;
       description: string;
-      category: string;
-      difficulty: string;
       questions: TrainingQuestion[];
     }
   >();
@@ -63,8 +62,6 @@ async function main() {
     modulesByTitle.set(question.module_title, {
       title: question.module_title,
       description: question.module_description,
-      category: question.category,
-      difficulty: question.difficulty,
       questions: [question]
     });
   }
@@ -76,7 +73,7 @@ async function main() {
   for (const moduleData of modulesByTitle.values()) {
     const { data: existingModule, error: existingModuleError } = await supabase
       .from("modules")
-      .select("id, title, description, category, difficulty")
+      .select("id, title, description")
       .eq("title", moduleData.title)
       .single();
 
@@ -91,11 +88,9 @@ async function main() {
         .from("modules")
         .insert({
           title: moduleData.title,
-          description: moduleData.description,
-          category: moduleData.category,
-          difficulty: moduleData.difficulty
+          description: moduleData.description
         })
-        .select("id, title, description, category, difficulty")
+        .select("id, title, description")
         .single();
 
       if (insertModuleError || !insertedModule) {
@@ -125,7 +120,6 @@ async function main() {
       question_text: string;
       benchmark_answer: string;
       rubric: string[];
-      difficulty: string;
       order_index: number;
     }> = [];
 
@@ -144,7 +138,6 @@ async function main() {
         question_text: question.question_text,
         benchmark_answer: question.benchmark_answer,
         rubric: question.rubric,
-        difficulty: question.difficulty,
         order_index: index + 1
       });
     });

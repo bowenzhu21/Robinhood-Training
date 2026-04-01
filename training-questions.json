@@ -1,32 +1,542 @@
 [
   {
-    "module_title": "Handling Refund Requests",
-    "module_description": "Basic refund and order issue handling",
-    "category": "refunds",
+    "module_title": "Account Access and Login Support",
+    "module_description": "Handling login, verification, and account access concerns with clear security-focused guidance.",
+    "category": "account_access",
     "difficulty": "easy",
-    "question_text": "A customer says they were charged twice for the same order. How should you respond?",
-    "benchmark_answer": "A strong response should acknowledge the issue, apologize, confirm the order details, explain that you will review the duplicate charge, and provide the next steps or escalation path.",
+    "question_text": "A customer says they are not receiving the two-factor authentication code needed to log in and they are getting frustrated. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the frustration, reassure the customer that account security matters, suggest basic troubleshooting such as checking spam messages or device signal, confirm the phone number or authentication method on file if appropriate, and explain the next secure step if the issue continues.",
+    "rubric": [
+      "acknowledges frustration with empathy",
+      "keeps a calm and professional tone",
+      "prioritizes account security",
+      "offers practical troubleshooting steps",
+      "explains the next secure step clearly"
+    ]
+  },
+  {
+    "module_title": "Account Access and Login Support",
+    "module_description": "Handling login, verification, and account access concerns with clear security-focused guidance.",
+    "category": "account_access",
+    "difficulty": "easy",
+    "question_text": "A customer says they forgot their password and can no longer access their account. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the issue, explain how to use the secure password reset flow, remind the customer not to share credentials, and set expectations for what to do if the reset email does not arrive or they remain locked out.",
     "rubric": [
       "shows empathy",
-      "apologizes clearly",
-      "confirms order details",
-      "explains next steps",
+      "directs the customer to the secure reset process",
+      "avoids asking for sensitive credentials",
+      "sets clear next steps if the reset fails",
+      "maintains professionalism"
+    ]
+  },
+  {
+    "module_title": "Account Access and Login Support",
+    "module_description": "Handling login, verification, and account access concerns with clear security-focused guidance.",
+    "category": "account_access",
+    "difficulty": "medium",
+    "question_text": "A customer says their account is restricted after multiple failed login attempts and they need access urgently. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the urgency, explain that temporary restrictions can protect the account, avoid bypassing security, outline the official verification or recovery process, and provide realistic timing or escalation guidance if needed.",
+    "rubric": [
+      "acknowledges urgency without overpromising",
+      "explains the security reason for the restriction",
+      "does not suggest bypassing controls",
+      "provides the official recovery path",
+      "sets expectations on timing or escalation"
+    ]
+  },
+  {
+    "module_title": "Account Access and Login Support",
+    "module_description": "Handling login, verification, and account access concerns with clear security-focused guidance.",
+    "category": "account_access",
+    "difficulty": "medium",
+    "question_text": "A customer says they changed phone numbers and can no longer complete login verification. How should you respond?",
+    "benchmark_answer": "A strong response should recognize the access problem, explain that changes to verification methods must be handled securely, describe the supported account recovery or identity verification steps, and avoid exposing sensitive account details before the customer is verified.",
+    "rubric": [
+      "shows empathy for the access issue",
+      "emphasizes secure handling of verification changes",
+      "describes the supported recovery process",
+      "avoids exposing sensitive information before verification",
+      "communicates clearly and professionally"
+    ]
+  },
+  {
+    "module_title": "Account Access and Login Support",
+    "module_description": "Handling login, verification, and account access concerns with clear security-focused guidance.",
+    "category": "account_access",
+    "difficulty": "medium",
+    "question_text": "A customer says they submitted identity verification documents but still cannot finish account setup. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the delay, explain that document review can take time, confirm that the documents are under review if that is supported by the case, and provide the next step or escalation path if the review is taking longer than expected.",
+    "rubric": [
+      "acknowledges the delay empathetically",
+      "sets reasonable expectations about review timing",
+      "provides a status update when appropriate",
+      "offers a next step if the delay continues",
+      "keeps the tone professional and reassuring"
+    ]
+  },
+  {
+    "module_title": "Account Access and Login Support",
+    "module_description": "Handling login, verification, and account access concerns with clear security-focused guidance.",
+    "category": "account_access",
+    "difficulty": "hard",
+    "question_text": "A customer insists they should be allowed to verify their identity by sending their social security number and password in chat because they cannot log in. How should you respond?",
+    "benchmark_answer": "A strong response should firmly but politely refuse to collect unsafe information through chat, explain that passwords should never be shared, emphasize security, and direct the customer to the approved recovery and verification channels.",
+    "rubric": [
+      "politely refuses unsafe information sharing",
+      "explicitly states that passwords should never be shared",
+      "prioritizes account security",
+      "redirects the customer to the approved process",
+      "maintains a professional and confident tone"
+    ]
+  },
+  {
+    "module_title": "Deposits, Withdrawals, and Transfers",
+    "module_description": "Handling ACH transfers, bank linking issues, deposit timing questions, and withdrawal concerns.",
+    "category": "funding",
+    "difficulty": "easy",
+    "question_text": "A customer says they initiated a deposit yesterday and the money still has not arrived in their brokerage account. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the concern, explain that bank transfers can take time to process, mention that timing can vary depending on the transfer type and review requirements, and advise the customer on what status to check and when to follow up.",
+    "rubric": [
+      "shows empathy",
+      "explains transfer timing clearly",
+      "avoids promising immediate availability",
+      "tells the customer what to check next",
+      "sets clear follow-up expectations"
+    ]
+  },
+  {
+    "module_title": "Deposits, Withdrawals, and Transfers",
+    "module_description": "Handling ACH transfers, bank linking issues, deposit timing questions, and withdrawal concerns.",
+    "category": "funding",
+    "difficulty": "easy",
+    "question_text": "A customer says their withdrawal is marked pending and they want to know why they cannot get their cash immediately. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the frustration, explain that withdrawals may remain pending during standard processing or review, avoid guaranteeing a release time, and provide a clear next step for monitoring the withdrawal or contacting support again if it remains delayed.",
+    "rubric": [
+      "acknowledges frustration",
+      "explains pending status in plain language",
+      "avoids inaccurate guarantees",
+      "gives a clear next step",
+      "maintains professionalism"
+    ]
+  },
+  {
+    "module_title": "Deposits, Withdrawals, and Transfers",
+    "module_description": "Handling ACH transfers, bank linking issues, deposit timing questions, and withdrawal concerns.",
+    "category": "funding",
+    "difficulty": "medium",
+    "question_text": "A customer says their bank account linking failed and they do not understand what went wrong. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the confusion, explain a few common reasons linking can fail such as incorrect credentials or account mismatches, avoid blaming the customer, and offer the supported next steps to retry or use an alternative verification method if available.",
+    "rubric": [
+      "acknowledges confusion empathetically",
+      "explains likely causes clearly",
+      "avoids blaming language",
+      "offers actionable next steps",
+      "uses a professional tone"
+    ]
+  },
+  {
+    "module_title": "Deposits, Withdrawals, and Transfers",
+    "module_description": "Handling ACH transfers, bank linking issues, deposit timing questions, and withdrawal concerns.",
+    "category": "funding",
+    "difficulty": "medium",
+    "question_text": "A customer says a recent deposit was reversed by their bank and now they are worried about their account. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the concern, explain that deposit reversals can happen when a bank rejects or pulls back a transfer, avoid speculation about the exact bank reason unless confirmed, and clearly describe what the customer should review or do next.",
+    "rubric": [
+      "shows empathy",
+      "explains what a reversal means",
+      "avoids unsupported assumptions",
+      "provides concrete next steps",
+      "keeps the tone calm and professional"
+    ]
+  },
+  {
+    "module_title": "Deposits, Withdrawals, and Transfers",
+    "module_description": "Handling ACH transfers, bank linking issues, deposit timing questions, and withdrawal concerns.",
+    "category": "funding",
+    "difficulty": "medium",
+    "question_text": "A customer says they transferred money to the wrong linked bank account and wants the platform to stop it immediately. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the urgency, explain that transfers may not always be reversible once submitted, advise the customer to review the transfer status, and provide the official next step or escalation path without making promises that the transfer can be stopped.",
+    "rubric": [
+      "acknowledges urgency",
+      "sets realistic expectations about reversibility",
+      "does not make unsupported promises",
+      "tells the customer what to review or do next",
+      "maintains professionalism"
+    ]
+  },
+  {
+    "module_title": "Deposits, Withdrawals, and Transfers",
+    "module_description": "Handling ACH transfers, bank linking issues, deposit timing questions, and withdrawal concerns.",
+    "category": "funding",
+    "difficulty": "hard",
+    "question_text": "A customer says they need their withdrawal released today because of an emergency and asks you to override the hold manually. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the seriousness of the situation, explain that support cannot bypass standard account or risk controls unless an approved exception path exists, avoid making false promises, and clearly provide the next supported step or escalation path.",
+    "rubric": [
+      "responds with empathy to the emergency",
+      "does not promise a manual override",
+      "explains that controls cannot be bypassed casually",
+      "offers the proper next step or escalation path",
+      "remains respectful and professional"
+    ]
+  },
+  {
+    "module_title": "Trade and Order Support",
+    "module_description": "Handling customer questions about order execution, timing, cancellations, and market behavior.",
+    "category": "trading",
+    "difficulty": "easy",
+    "question_text": "A customer says their stock order did not fill right away and wants to know why. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the concern, explain that orders may not fill immediately depending on order type, price, and market conditions, and guide the customer to review the order details and status without giving investment advice.",
+    "rubric": [
+      "acknowledges the concern",
+      "explains fill timing in simple language",
+      "references relevant factors like order type or market conditions",
+      "avoids giving investment advice",
+      "provides a clear next step"
+    ]
+  },
+  {
+    "module_title": "Trade and Order Support",
+    "module_description": "Handling customer questions about order execution, timing, cancellations, and market behavior.",
+    "category": "trading",
+    "difficulty": "easy",
+    "question_text": "A customer says they tried to cancel an order but it still executed. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the frustration, explain that cancellation requests are not guaranteed if an order is already executing or filled, and advise the customer to review the order status details while offering further help understanding the outcome.",
+    "rubric": [
+      "shows empathy",
+      "explains that cancellation requests are not guaranteed",
+      "describes the likely timing issue clearly",
+      "offers a next step for reviewing the order",
+      "maintains a professional tone"
+    ]
+  },
+  {
+    "module_title": "Trade and Order Support",
+    "module_description": "Handling customer questions about order execution, timing, cancellations, and market behavior.",
+    "category": "trading",
+    "difficulty": "medium",
+    "question_text": "A customer says they placed a market order and received a worse price than expected. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the concern, explain that market orders can execute at the best available market price at the time and may vary in fast-moving markets, and suggest reviewing order type information for future trades without providing advice on what to buy or sell.",
+    "rubric": [
+      "acknowledges the pricing concern",
+      "explains market order behavior accurately",
+      "mentions fast-moving market conditions if relevant",
+      "avoids investment advice",
+      "keeps the explanation clear and professional"
+    ]
+  },
+  {
+    "module_title": "Trade and Order Support",
+    "module_description": "Handling customer questions about order execution, timing, cancellations, and market behavior.",
+    "category": "trading",
+    "difficulty": "medium",
+    "question_text": "A customer is confused about why they cannot trade a stock right now and says the app is broken. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the frustration, explain that trading availability can be affected by market hours, restrictions, or specific account conditions, avoid speculating about unsupported causes, and guide the customer to review the specific message or status shown in the app.",
+    "rubric": [
+      "shows empathy",
+      "explains common reasons trading may be unavailable",
+      "avoids unsupported speculation",
+      "asks the customer to review the exact status or message",
+      "maintains professionalism"
+    ]
+  },
+  {
+    "module_title": "Trade and Order Support",
+    "module_description": "Handling customer questions about order execution, timing, cancellations, and market behavior.",
+    "category": "trading",
+    "difficulty": "medium",
+    "question_text": "A customer says they sold a stock but cannot withdraw the cash immediately and wants to know why. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the confusion, explain that proceeds from a sale may require settlement before withdrawal, avoid promising exact availability unless confirmed, and give the customer a clear next step for checking the cash availability timeline.",
+    "rubric": [
+      "acknowledges confusion",
+      "explains settlement clearly",
+      "avoids inaccurate promises",
+      "provides a clear next step",
+      "uses a professional tone"
+    ]
+  },
+  {
+    "module_title": "Trade and Order Support",
+    "module_description": "Handling customer questions about order execution, timing, cancellations, and market behavior.",
+    "category": "trading",
+    "difficulty": "hard",
+    "question_text": "A customer says they lost money because the platform should have warned them more clearly before their order executed and they want compensation. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the customer’s frustration, avoid admitting fault or promising compensation without review, explain that the concern can be reviewed through the appropriate support process, and provide the next step for escalation if needed.",
+    "rubric": [
+      "acknowledges the customer's frustration",
+      "avoids promising compensation or admitting liability",
+      "keeps the explanation professional and careful",
+      "offers the correct review or escalation path",
+      "provides clear next steps"
+    ]
+  },
+  {
+    "module_title": "Fraud, Security, and Account Protection",
+    "module_description": "Handling suspicious activity, security concerns, and urgent account protection situations.",
+    "category": "security",
+    "difficulty": "easy",
+    "question_text": "A customer says they noticed a login from a device they do not recognize. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the seriousness of the issue, advise the customer to secure the account immediately using approved steps such as updating their password and reviewing security settings, and explain how to escalate or report the suspicious activity.",
+    "rubric": [
+      "treats the issue as serious",
+      "shows empathy",
+      "prioritizes immediate account security steps",
+      "gives a clear reporting or escalation path",
+      "communicates calmly and professionally"
+    ]
+  },
+  {
+    "module_title": "Fraud, Security, and Account Protection",
+    "module_description": "Handling suspicious activity, security concerns, and urgent account protection situations.",
+    "category": "security",
+    "difficulty": "easy",
+    "question_text": "A customer says they clicked on a suspicious email that looked like it came from the brokerage app. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the concern, advise the customer not to interact further with the message, recommend immediate account security steps such as changing the password and reviewing account activity, and explain how to report the phishing attempt.",
+    "rubric": [
+      "acknowledges concern promptly",
+      "advises the customer to stop interacting with the suspicious message",
+      "recommends immediate security actions",
+      "includes a reporting step",
+      "maintains a calm and professional tone"
+    ]
+  },
+  {
+    "module_title": "Fraud, Security, and Account Protection",
+    "module_description": "Handling suspicious activity, security concerns, and urgent account protection situations.",
+    "category": "security",
+    "difficulty": "medium",
+    "question_text": "A customer says they see an outgoing bank transfer they did not authorize. How should you respond?",
+    "benchmark_answer": "A strong response should treat the issue urgently, acknowledge the concern, explain that the account should be secured and the activity reviewed immediately, and provide the official reporting and escalation path without asking for unsafe information in chat.",
+    "rubric": [
+      "treats the issue as urgent",
+      "shows empathy",
+      "prioritizes account protection",
+      "does not request unsafe sensitive information",
+      "provides a clear reporting and escalation path"
+    ]
+  },
+  {
+    "module_title": "Fraud, Security, and Account Protection",
+    "module_description": "Handling suspicious activity, security concerns, and urgent account protection situations.",
+    "category": "security",
+    "difficulty": "medium",
+    "question_text": "A customer says someone may have gained access to their email account and they are worried their brokerage account could be at risk. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the security risk, explain that email access can affect account security, recommend immediate protective actions for both email and brokerage access where appropriate, and guide the customer to the correct security support process.",
+    "rubric": [
+      "recognizes the security risk clearly",
+      "shows empathy",
+      "recommends immediate protective actions",
+      "connects email compromise to account security appropriately",
+      "provides a clear support path"
+    ]
+  },
+  {
+    "module_title": "Fraud, Security, and Account Protection",
+    "module_description": "Handling suspicious activity, security concerns, and urgent account protection situations.",
+    "category": "security",
+    "difficulty": "medium",
+    "question_text": "A customer asks you to confirm their full account number and personal details in chat because they think the account was compromised. How should you respond?",
+    "benchmark_answer": "A strong response should politely refuse to share or confirm sensitive information in an unsafe way, explain that security protocols limit what can be disclosed in chat, and direct the customer to approved account protection or verification steps.",
+    "rubric": [
+      "protects sensitive information",
+      "politely explains security limitations",
+      "does not disclose unsafe account details",
+      "redirects to the proper verification or protection flow",
+      "maintains a professional tone"
+    ]
+  },
+  {
+    "module_title": "Fraud, Security, and Account Protection",
+    "module_description": "Handling suspicious activity, security concerns, and urgent account protection situations.",
+    "category": "security",
+    "difficulty": "hard",
+    "question_text": "A customer says they believe unauthorized trades were placed in their account overnight and they are panicking. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the severity and emotion of the situation, advise immediate account security actions, explain that the activity must be formally reviewed, avoid promising a final outcome before investigation, and provide a clear escalation path right away.",
+    "rubric": [
+      "responds with empathy to a high-stress situation",
+      "prioritizes immediate security steps",
+      "explains that a formal review is needed",
+      "avoids promising an outcome before investigation",
+      "offers a clear escalation path"
+    ]
+  },
+  {
+    "module_title": "Policy, Restrictions, and Compliance",
+    "module_description": "Handling policy-sensitive conversations involving restrictions, eligibility, and compliance-driven actions.",
+    "category": "policy",
+    "difficulty": "easy",
+    "question_text": "A customer says they do not understand why their account has a restriction and wants a simple explanation. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the confusion, explain that some restrictions are applied for regulatory, risk, or account review reasons, avoid sharing unsupported details, and provide the next step the customer should take to understand or resolve the restriction.",
+    "rubric": [
+      "acknowledges confusion",
+      "explains restrictions in plain language",
+      "avoids unsupported or sensitive detail",
+      "provides a next step",
       "keeps a professional tone"
     ]
   },
   {
-    "module_title": "Shipping Delays",
-    "module_description": "Handling order delivery problems",
-    "category": "shipping",
+    "module_title": "Policy, Restrictions, and Compliance",
+    "module_description": "Handling policy-sensitive conversations involving restrictions, eligibility, and compliance-driven actions.",
+    "category": "policy",
     "difficulty": "easy",
-    "question_text": "A customer says their package is late and they are upset. How should you respond?",
-    "benchmark_answer": "A strong response should acknowledge frustration, apologize, check the shipment, explain the current status, and offer a concrete next step.",
+    "question_text": "A customer says they were asked for additional information to keep using their account and wants to know why. How should you respond?",
+    "benchmark_answer": "A strong response should explain that additional information may be required for identity, regulatory, or account review purposes, reassure the customer that the request is part of standard account compliance handling when appropriate, and clearly state the next step.",
     "rubric": [
-      "shows empathy",
-      "apologizes",
-      "checks status",
-      "offers next step",
-      "remains calm and professional"
+      "explains the request clearly",
+      "ties the request to compliance or verification appropriately",
+      "reassures without overpromising",
+      "gives a clear next step",
+      "maintains professionalism"
+    ]
+  },
+  {
+    "module_title": "Policy, Restrictions, and Compliance",
+    "module_description": "Handling policy-sensitive conversations involving restrictions, eligibility, and compliance-driven actions.",
+    "category": "policy",
+    "difficulty": "medium",
+    "question_text": "A customer says they want you to remove a trading restriction immediately because they think the policy is unfair. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the frustration, explain that restrictions tied to policy or account review cannot be removed casually by support, avoid arguing with the customer, and provide the correct review or escalation path if one exists.",
+    "rubric": [
+      "acknowledges frustration",
+      "does not argue or sound defensive",
+      "explains policy limitations clearly",
+      "does not promise immediate removal",
+      "offers the proper next step or escalation path"
+    ]
+  },
+  {
+    "module_title": "Policy, Restrictions, and Compliance",
+    "module_description": "Handling policy-sensitive conversations involving restrictions, eligibility, and compliance-driven actions.",
+    "category": "policy",
+    "difficulty": "medium",
+    "question_text": "A customer says they are traveling and cannot access a feature they usually use. They want to know whether it is a bug or a policy issue. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the inconvenience, explain that location, eligibility, or compliance factors can affect feature availability, avoid guessing when the exact cause is not confirmed, and guide the customer to check the relevant notice or follow the supported help path.",
+    "rubric": [
+      "shows empathy for the inconvenience",
+      "mentions policy or eligibility limitations appropriately",
+      "avoids unsupported speculation",
+      "provides a practical next step",
+      "communicates clearly"
+    ]
+  },
+  {
+    "module_title": "Policy, Restrictions, and Compliance",
+    "module_description": "Handling policy-sensitive conversations involving restrictions, eligibility, and compliance-driven actions.",
+    "category": "policy",
+    "difficulty": "medium",
+    "question_text": "A customer says they want to know the exact internal reason their account is under review and refuses to wait. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the frustration, explain that some review details may be limited during an active investigation or compliance review, avoid disclosing internal processes improperly, and set expectations for the next communication or escalation path.",
+    "rubric": [
+      "acknowledges frustration",
+      "protects internal or sensitive review details appropriately",
+      "explains limits on what can be shared",
+      "sets expectations for next steps",
+      "maintains professionalism"
+    ]
+  },
+  {
+    "module_title": "Policy, Restrictions, and Compliance",
+    "module_description": "Handling policy-sensitive conversations involving restrictions, eligibility, and compliance-driven actions.",
+    "category": "policy",
+    "difficulty": "hard",
+    "question_text": "A customer says they will post publicly online if support does not make an exception to a stated account policy. How should you respond?",
+    "benchmark_answer": "A strong response should remain calm, acknowledge the frustration, avoid escalating the tone, explain that support must follow policy and approved exception processes, and offer the proper next step or escalation path without making unauthorized commitments.",
+    "rubric": [
+      "remains calm and professional under pressure",
+      "acknowledges frustration",
+      "does not make unauthorized exceptions",
+      "explains policy boundaries clearly",
+      "provides an appropriate escalation or next step"
+    ]
+  },
+  {
+    "module_title": "De-escalation and Escalation Handling",
+    "module_description": "Managing emotionally charged conversations while protecting policy, clarity, and escalation quality.",
+    "category": "escalations",
+    "difficulty": "easy",
+    "question_text": "A customer is angry, says support never helps, and demands to speak to a manager immediately. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the frustration, avoid taking the comment personally, remain calm, explain the available escalation path honestly, and reassure the customer that their concern will be handled appropriately.",
+    "rubric": [
+      "acknowledges frustration",
+      "stays calm and professional",
+      "does not become defensive",
+      "explains the escalation path clearly",
+      "reassures the customer appropriately"
+    ]
+  },
+  {
+    "module_title": "De-escalation and Escalation Handling",
+    "module_description": "Managing emotionally charged conversations while protecting policy, clarity, and escalation quality.",
+    "category": "escalations",
+    "difficulty": "easy",
+    "question_text": "A customer says they have already explained the problem three times and do not want to repeat themselves again. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the frustration of repeating information, apologize for the experience, summarize the issue back to show understanding, and clearly explain the next step without asking unnecessary repeat questions.",
+    "rubric": [
+      "shows empathy for the repeated effort",
+      "includes a clear apology",
+      "demonstrates understanding by summarizing the issue",
+      "avoids unnecessary repetition",
+      "provides a clear next step"
+    ]
+  },
+  {
+    "module_title": "De-escalation and Escalation Handling",
+    "module_description": "Managing emotionally charged conversations while protecting policy, clarity, and escalation quality.",
+    "category": "escalations",
+    "difficulty": "medium",
+    "question_text": "A customer is using hostile language and insists they need an answer right now even though the case requires review. How should you respond?",
+    "benchmark_answer": "A strong response should remain calm, acknowledge the urgency, set respectful boundaries if needed, explain that the case requires review before a final answer can be given, and provide the clearest available next step or timing expectation.",
+    "rubric": [
+      "remains calm under pressure",
+      "acknowledges urgency",
+      "sets appropriate boundaries if needed",
+      "explains why review is required",
+      "gives a realistic next step or timing expectation"
+    ]
+  },
+  {
+    "module_title": "De-escalation and Escalation Handling",
+    "module_description": "Managing emotionally charged conversations while protecting policy, clarity, and escalation quality.",
+    "category": "escalations",
+    "difficulty": "medium",
+    "question_text": "A customer says the issue is causing them financial stress and asks whether support can prioritize their case. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the stress and show empathy, avoid promising special treatment unless there is an approved process, explain what can be done next, and set realistic expectations about review or escalation.",
+    "rubric": [
+      "shows empathy for the financial stress",
+      "does not promise unapproved prioritization",
+      "explains available next steps clearly",
+      "sets realistic expectations",
+      "maintains professionalism"
+    ]
+  },
+  {
+    "module_title": "De-escalation and Escalation Handling",
+    "module_description": "Managing emotionally charged conversations while protecting policy, clarity, and escalation quality.",
+    "category": "escalations",
+    "difficulty": "medium",
+    "question_text": "A customer says they received two different answers from support and now do not trust the platform. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the confusion and loss of confidence, apologize for the inconsistent experience, avoid blaming another agent, clarify the next step for getting the issue reviewed accurately, and communicate in a clear and steady tone.",
+    "rubric": [
+      "acknowledges confusion and mistrust",
+      "apologizes for the inconsistent experience",
+      "does not blame another agent",
+      "offers a clear review or next step",
+      "maintains a professional tone"
+    ]
+  },
+  {
+    "module_title": "De-escalation and Escalation Handling",
+    "module_description": "Managing emotionally charged conversations while protecting policy, clarity, and escalation quality.",
+    "category": "escalations",
+    "difficulty": "hard",
+    "question_text": "A customer says they are considering filing a complaint with regulators because they believe support mishandled their case. How should you respond?",
+    "benchmark_answer": "A strong response should remain calm and professional, acknowledge the seriousness of the concern, avoid arguing or discouraging the customer from taking formal action, explain the appropriate internal escalation or review path, and provide clear next steps without making legal statements.",
+    "rubric": [
+      "remains calm and professional",
+      "acknowledges the seriousness of the concern",
+      "does not argue or make legal claims",
+      "offers the correct internal escalation path",
+      "provides clear and respectful next steps"
     ]
   }
 ]

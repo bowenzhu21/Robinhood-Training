@@ -10,11 +10,11 @@ export default async function LoginPage() {
         <section className="space-y-10">
           <div className="inline-flex items-center gap-3 rounded-full border border-white/8 bg-white/[0.02] px-4 py-2 text-xs uppercase tracking-[0.28em] text-[var(--muted)]">
             <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_14px_rgba(151,255,111,0.9)]" />
-            Internal enablement
+            Internal Training Tool
           </div>
           <div className="space-y-6">
             <h1 className="headline max-w-4xl text-5xl leading-[0.98] sm:text-6xl lg:text-7xl">
-              Train customer support agents with fast feedback and zero clutter.
+              Customer Support Agent Training Tool
             </h1>
             <p className="max-w-2xl text-[1.02rem] leading-8 text-[var(--muted)]">
               A focused onboarding workspace for response writing, AI grading, and module progress tracking. Built for

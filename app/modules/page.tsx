@@ -23,11 +23,22 @@ export default async function ModulesPage() {
           </p>
         </section>
 
-        <section className="grid gap-7">
-          {modules.map((module) => (
-            <ModuleCard key={module.id} module={module} />
-          ))}
-        </section>
+        {modules.length ? (
+          <section className="grid gap-7">
+            {modules.map((module) => (
+              <ModuleCard key={module.id} module={module} variant="modules" />
+            ))}
+          </section>
+        ) : (
+          <section className="card rounded-[2rem] p-8 sm:p-10">
+            <p className="eyebrow">No modules yet</p>
+            <h2 className="headline mt-4 text-3xl sm:text-4xl">No training modules have been seeded yet.</h2>
+            <p className="mt-4 max-w-2xl text-base leading-8 text-[var(--muted)]">
+              Add training content to <code>training-questions.json</code> and run <code>npm run seed</code> to create
+              your first modules and questions in Supabase.
+            </p>
+          </section>
+        )}
       </main>
     </div>
   );

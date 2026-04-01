@@ -12,7 +12,7 @@ export type ModuleRecord = {
   id: string;
   title: string;
   description: string;
-  category: string;
+  category: string | null;
   difficulty: string | null;
 };
 
@@ -35,13 +35,13 @@ export type AttemptRecord = {
 export type ModuleProgressRecord = {
   user_id: string;
   module_id: string;
-  completed_questions: number;
-  total_questions: number;
-  average_score: number | null;
-  last_question_id: string | null;
-  status: "not_started" | "in_progress" | "completed";
-  last_attempted_at: string | null;
-  completed_at: string | null;
+  completed_questions?: number;
+  total_questions?: number;
+  average_score?: number | null;
+  last_question_id?: string | null;
+  status?: "not_started" | "in_progress" | "completed";
+  last_attempted_at?: string | null;
+  completed_at?: string | null;
 };
 
 export type DashboardModule = ModuleRecord & {
@@ -50,6 +50,10 @@ export type DashboardModule = ModuleRecord & {
   averageScore: number | null;
   status: ModuleProgressRecord["status"];
   resumeQuestionId: string | null;
+};
+
+export type ModuleLibraryItem = ModuleRecord & {
+  totalQuestions: number;
 };
 
 export type GradeResult = {

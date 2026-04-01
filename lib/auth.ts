@@ -42,18 +42,37 @@ export async function ensureProfile(user: {
         ? user.user_metadata.name
         : null;
 
+  const fullProfilePayload = {
+    id: user.id,
+    email: user.email ?? null,
+    full_name: fullName
+  };
+
   const { error } = await supabaseAdmin.from("profiles").upsert(
     {
-      id: user.id,
-      email: user.email ?? null,
-      full_name: fullName
+      ...fullProfilePayload
     },
     {
       onConflict: "id"
     }
   );
 
-  if (error) {
-    console.error("Failed to ensure profile", error);
+  if (!error) {
+    return;
+  }
+
+  // Some MVP schemas only store `id` on profiles.
+  // Fall back to a minimal row so the app still works against leaner tables.
+  const { error: fallbackError } = await supabaseAdmin.from("profiles").upsert(
+    {
+      id: user.id
+    },
+    {
+      onConflict: "id"
+    }
+  );
+
+  if (!fallbackError) {
+    return;
   }
 }

@@ -34,12 +34,20 @@ const fallbackInvalidJsonResult: GradeResult = {
 
 function buildPrompt(input: GradeInput) {
   return [
-    "You are grading a customer service training response.",
+    "System prompt:",
+    "",
+    "You are grading a customer service trainee.",
+    "",
+    "Evaluate the trainee response against:",
+    "1. the question",
+    "2. the benchmark answer",
+    "3. the rubric criteria",
+    "",
     "Grade fairly.",
     "Do not punish different wording if the meaning is correct.",
-    "Prioritize empathy, professionalism, clarity, factual accuracy, and next steps.",
-    "Return valid JSON only. Do not include markdown, code fences, or extra text.",
-    "Use this exact JSON shape and keep all keys present:",
+    "Prioritize empathy, clarity, accuracy, professionalism, and clear next steps.",
+    "",
+    "Return valid JSON only with this exact shape:",
     JSON.stringify({
       score: 0,
       passed: true,
@@ -50,11 +58,23 @@ function buildPrompt(input: GradeInput) {
       ideal_rewrite: ""
     }),
     "",
-    "Grade this submission using the following inputs:",
-    `question_text: ${input.questionText}`,
-    `benchmark_answer: ${input.benchmarkAnswer}`,
-    `rubric: ${JSON.stringify(input.rubric)}`,
-    `trainee_answer: ${input.traineeAnswer}`
+    "Use a simple pass threshold like:",
+    "",
+    "80 and up = pass",
+    "",
+    "User payload:",
+    "",
+    "Question:",
+    input.questionText,
+    "",
+    "Benchmark answer:",
+    input.benchmarkAnswer,
+    "",
+    "Rubric:",
+    JSON.stringify(input.rubric),
+    "",
+    "Trainee answer:",
+    input.traineeAnswer
   ].join("\n");
 }
 
@@ -142,5 +162,8 @@ export async function gradeWithGemini(input: GradeInput): Promise<GradeResult> {
     return fallbackInvalidJsonResult;
   }
 
-  return parsed.data;
+  return {
+    ...parsed.data,
+    passed: parsed.data.score >= 80
+  };
 }

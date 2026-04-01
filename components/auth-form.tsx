@@ -72,7 +72,7 @@ export function AuthForm() {
             type="button"
             onClick={() => setMode(value)}
             className={`flex-1 rounded-full px-4 py-2 text-sm capitalize transition ${
-              mode === value ? "bg-[var(--accent)] text-black" : "text-[var(--muted)]"
+              mode === value ? "bg-[var(--accent)] text-[#061006]" : "text-[var(--muted)]"
             }`}
           >
             {value === "signup" ? "Create account" : "Log in"}
@@ -125,7 +125,7 @@ export function AuthForm() {
         <button
           type="submit"
           disabled={loading}
-          className="accent-glow mt-2 w-full rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3.5 text-sm font-medium text-black disabled:opacity-60"
+          className="accent-glow mt-2 w-full rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3.5 text-sm font-medium text-[#061006] disabled:opacity-60"
         >
           {loading ? "Please wait..." : mode === "login" ? "Log in" : "Create account"}
         </button>

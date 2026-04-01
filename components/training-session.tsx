@@ -186,7 +186,7 @@ export function TrainingSession({
               type="button"
               disabled={loading}
               onClick={submitAnswer}
-              className="accent-glow rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3.5 text-sm font-medium text-black disabled:opacity-60"
+              className="accent-glow rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3.5 text-sm font-medium text-[#061006] disabled:opacity-60"
             >
               {loading ? "Grading..." : "Submit for grading"}
             </button>
@@ -210,7 +210,7 @@ export function TrainingSession({
                 </span>
                 <span
                   className={`rounded-full px-3 py-1 text-xs uppercase tracking-[0.2em] ${
-                    result.passed ? "bg-[var(--accent)] text-black" : "border border-white/8 bg-white/[0.02] text-white"
+                    result.passed ? "bg-[var(--accent)] text-[#061006]" : "border border-white/8 bg-white/[0.02] text-white"
                   }`}
                 >
                   {result.passed ? "Passed" : "Needs work"}

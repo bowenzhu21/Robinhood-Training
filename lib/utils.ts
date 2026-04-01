@@ -5,6 +5,10 @@ export function cn(...values: Array<string | undefined | false | null>) {
 }
 
 export function formatPercent(value: number) {
+  if (!Number.isFinite(value) || Number.isNaN(value)) {
+    return "0%";
+  }
+
   return `${Math.round(value)}%`;
 }
 

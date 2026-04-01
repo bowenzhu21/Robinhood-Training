@@ -11,7 +11,7 @@ export default function NotFoundPage() {
         </p>
         <Link
           href="/modules"
-          className="mt-8 inline-flex rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3 text-sm font-medium text-black"
+          className="mt-8 inline-flex rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3 text-sm font-medium text-[#061006]"
         >
           Back to modules
         </Link>

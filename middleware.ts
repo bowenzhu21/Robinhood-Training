@@ -1,9 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-import { publicEnv } from "@/lib/public-env";
+import { getPublicEnv } from "@/lib/public-env";
 
 export async function middleware(request: NextRequest) {
+  const publicEnv = getPublicEnv();
   const response = NextResponse.next({
     request: {
       headers: request.headers

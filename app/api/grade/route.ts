@@ -12,6 +12,105 @@ const requestSchema = z.object({
   traineeAnswer: z.string().min(1)
 });
 
+async function saveModuleProgress(input: {
+  userId: string;
+  moduleId: string;
+  questionId: string;
+  completedQuestions: number;
+  totalQuestions: number;
+  averageScore: number | null;
+  status: "not_started" | "in_progress" | "completed";
+}) {
+  const timestamp = new Date().toISOString();
+
+  const fullPayload = {
+    user_id: input.userId,
+    module_id: input.moduleId,
+    completed_questions: input.completedQuestions,
+    total_questions: input.totalQuestions,
+    average_score: input.averageScore,
+    last_question_id: input.questionId,
+    status: input.status,
+    last_attempted_at: timestamp,
+    completed_at: input.status === "completed" ? timestamp : null
+  };
+
+  const { error: fullError } = await supabaseAdmin.from("module_progress").upsert(fullPayload, {
+    onConflict: "user_id,module_id"
+  });
+
+  if (!fullError) {
+    return;
+  }
+
+  const fallbackPayload = {
+    user_id: input.userId,
+    module_id: input.moduleId
+  };
+
+  const { error: fallbackError } = await supabaseAdmin.from("module_progress").upsert(fallbackPayload, {
+    onConflict: "user_id,module_id"
+  });
+
+  if (!fallbackError) {
+    console.warn("Module progress saved with minimal schema because optional progress columns were rejected.");
+    return;
+  }
+
+  console.error("Failed to save module progress", {
+    fullError,
+    fallbackError
+  });
+}
+
+async function saveAttempt(input: {
+  userId: string;
+  moduleId: string;
+  questionId: string;
+  traineeAnswer: string;
+  result: ReturnType<typeof gradeWithGemini> extends Promise<infer T> ? T : never;
+}) {
+  const fullPayload = {
+    user_id: input.userId,
+    module_id: input.moduleId,
+    question_id: input.questionId,
+    trainee_answer: input.traineeAnswer,
+    score: input.result.score,
+    passed: input.result.passed,
+    rubric_scores: input.result.rubric_scores,
+    strengths: input.result.strengths,
+    missed_points: input.result.missed_points,
+    feedback_to_agent: input.result.feedback_to_agent,
+    ideal_rewrite: input.result.ideal_rewrite
+  };
+
+  const fullInsert = await supabaseAdmin.from("attempts").insert(fullPayload).select("id, question_id, score, passed").single();
+
+  if (!fullInsert.error && fullInsert.data) {
+    return fullInsert.data;
+  }
+
+  const fallbackPayload = {
+    user_id: input.userId,
+    question_id: input.questionId,
+    trainee_answer: input.traineeAnswer,
+    score: input.result.score,
+    passed: input.result.passed
+  };
+
+  const fallbackInsert = await supabaseAdmin
+    .from("attempts")
+    .insert(fallbackPayload)
+    .select("id, question_id, score, passed")
+    .single();
+
+  if (!fallbackInsert.error && fallbackInsert.data) {
+    return fallbackInsert.data;
+  }
+
+  throw new Error(`Failed to save attempt: ${fallbackInsert.error?.message ?? fullInsert.error?.message ?? "unknown error"}`);
+}
+
 export async function POST(request: Request) {
   try {
     // Read the signed-in user from the server session so grading remains private.
@@ -47,48 +146,41 @@ export async function POST(request: Request) {
       traineeAnswer: body.traineeAnswer
     });
 
-    const attemptPayload = {
-      user_id: user.id,
-      module_id: body.moduleId,
-      question_id: body.questionId,
-      trainee_answer: body.traineeAnswer,
-      score: result.score,
-      passed: result.passed,
-      rubric_scores: result.rubric_scores,
-      strengths: result.strengths,
-      missed_points: result.missed_points,
-      feedback_to_agent: result.feedback_to_agent,
-      ideal_rewrite: result.ideal_rewrite
-    };
-
     // Save every grading attempt so the trainee can review progress over time.
-    const { data: attempt, error: attemptError } = await supabaseAdmin
-      .from("attempts")
-      .insert(attemptPayload)
-      .select("id, question_id, score, passed")
-      .single();
+    const attempt = await saveAttempt({
+      userId: user.id,
+      moduleId: body.moduleId,
+      questionId: body.questionId,
+      traineeAnswer: body.traineeAnswer,
+      result
+    });
 
-    if (attemptError) {
-      throw new Error(`Failed to save attempt: ${attemptError.message}`);
-    }
-
-    const [{ data: latestAttempts, error: attemptsError }, { count: totalQuestions, error: countError }] =
+    const [{ data: moduleQuestions, error: moduleQuestionsError }, { count: totalQuestions, error: countError }] =
       await Promise.all([
-        supabaseAdmin
-          .from("attempts")
-          .select("question_id, score, created_at")
-          .eq("user_id", user.id)
-          .eq("module_id", body.moduleId)
-          .order("created_at", { ascending: false }),
+        supabaseAdmin.from("questions").select("id").eq("module_id", body.moduleId),
         supabaseAdmin.from("questions").select("*", { count: "exact", head: true }).eq("module_id", body.moduleId)
       ]);
 
-    if (attemptsError) {
-      throw new Error(`Failed to read attempts: ${attemptsError.message}`);
+    if (moduleQuestionsError) {
+      throw new Error(`Failed to load module questions: ${moduleQuestionsError.message}`);
     }
 
     if (countError) {
       throw new Error(`Failed to count questions: ${countError.message}`);
+    }
+
+    const questionIds = (moduleQuestions ?? []).map((item) => String(item.id));
+    const { data: latestAttempts, error: attemptsError } = questionIds.length
+      ? await supabaseAdmin
+          .from("attempts")
+          .select("question_id, score, created_at")
+          .eq("user_id", user.id)
+          .in("question_id", questionIds)
+          .order("created_at", { ascending: false })
+      : { data: [], error: null };
+
+    if (attemptsError) {
+      throw new Error(`Failed to read attempts: ${attemptsError.message}`);
     }
 
     const latestByQuestion = new Map<string, number>();
@@ -105,27 +197,16 @@ export async function POST(request: Request) {
     const averageScore = average(Array.from(latestByQuestion.values()));
     const status = completedQuestions === 0 ? "not_started" : completedQuestions >= total ? "completed" : "in_progress";
 
-    // Upsert module-level progress so the dashboard can show resume state and averages.
-    const { error: progressError } = await supabaseAdmin.from("module_progress").upsert(
-      {
-        user_id: user.id,
-        module_id: body.moduleId,
-        completed_questions: completedQuestions,
-        total_questions: total,
-        average_score: averageScore,
-        last_question_id: body.questionId,
-        status,
-        last_attempted_at: new Date().toISOString(),
-        completed_at: status === "completed" ? new Date().toISOString() : null
-      },
-      {
-        onConflict: "user_id,module_id"
-      }
-    );
-
-    if (progressError) {
-      throw new Error(`Failed to save progress: ${progressError.message}`);
-    }
+    // Save progress when possible, but do not fail grading if the progress table is a leaner MVP schema.
+    await saveModuleProgress({
+      userId: user.id,
+      moduleId: body.moduleId,
+      questionId: body.questionId,
+      completedQuestions,
+      totalQuestions: total,
+      averageScore,
+      status
+    });
 
     return NextResponse.json({
       result,
