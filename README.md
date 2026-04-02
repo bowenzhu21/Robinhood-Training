@@ -63,6 +63,12 @@ npm run dev
 
 `GEMINI_MODEL` is optional. The app defaults to `gemini-2.5-flash`.
 
+## Live deployment
+
+Production URL:
+
+- `https://robinhood-training.vercel.app/`
+
 ## Important environment notes
 
 - `SUPABASE_SERVICE_ROLE_KEY` must be the real Supabase `service_role` key, not another anon key
