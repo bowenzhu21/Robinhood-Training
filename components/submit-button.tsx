@@ -17,7 +17,7 @@ export function SubmitButton({ children, className }: SubmitButtonProps) {
       type="submit"
       disabled={pending}
       className={cn(
-        "inline-flex items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-2.5 text-sm font-medium text-[#061006] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60",
+        "accent-button inline-flex items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-2.5 text-sm font-medium transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60",
         className
       )}
     >

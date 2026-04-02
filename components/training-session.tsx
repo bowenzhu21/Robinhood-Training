@@ -65,7 +65,24 @@ export function TrainingSession({
   const progressPercent = progress.totalQuestions
     ? (progress.completedQuestions / progress.totalQuestions) * 100
     : 0;
+  const isFirstQuestion = questionIndex === 0;
   const isLastQuestion = questionIndex === questions.length - 1;
+  const passedResult = result?.passed ?? false;
+  const resultContainerClassName = passedResult
+    ? "border-[var(--border-strong)] bg-[linear-gradient(180deg,rgba(151,255,111,0.06),rgba(255,255,255,0.015))]"
+    : "border-[rgba(255,141,141,0.2)] bg-[linear-gradient(180deg,rgba(255,141,141,0.1),rgba(255,255,255,0.015))]";
+  const resultPanelClassName = passedResult
+    ? "subtle-panel rounded-[1.5rem] p-5"
+    : "rounded-[1.5rem] border border-[rgba(255,141,141,0.12)] bg-[linear-gradient(180deg,rgba(255,141,141,0.06),rgba(255,255,255,0.015))] p-5";
+  const resultRewriteClassName = passedResult
+    ? "mt-3 rounded-[1.5rem] border border-white/8 bg-black/20 p-5 text-sm leading-7 text-white"
+    : "mt-3 rounded-[1.5rem] border border-[rgba(255,141,141,0.14)] bg-[linear-gradient(180deg,rgba(255,141,141,0.06),rgba(0,0,0,0.18))] p-5 text-sm leading-7 text-white";
+  const resultScoreBadgeClassName = passedResult
+    ? "rounded-full border border-white/8 bg-white/[0.02] px-3 py-1 text-xs uppercase tracking-[0.2em] text-[var(--muted)]"
+    : "rounded-full border border-[rgba(255,141,141,0.16)] bg-[rgba(255,141,141,0.08)] px-3 py-1 text-xs uppercase tracking-[0.2em] text-[#ffd2d2]";
+  const resultStatusBadgeClassName = passedResult
+    ? "accent-button bg-[var(--accent)]"
+    : "border border-[rgba(255,141,141,0.22)] bg-[rgba(255,141,141,0.12)] text-[#ffe1e1]";
 
   const currentAttempt = useMemo(
     () => attempts.find((attempt) => attempt.questionId === question.id),
@@ -128,10 +145,21 @@ export function TrainingSession({
     setError(null);
   }
 
+  function goToPreviousQuestion() {
+    if (isFirstQuestion) {
+      return;
+    }
+
+    setQuestionIndex((current) => current - 1);
+    setAnswer("");
+    setResult(null);
+    setError(null);
+  }
+
   return (
     <div className="space-y-8">
-      <section className="card rounded-[2.25rem] p-8 sm:p-10">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <section className="card card-module rounded-[2.25rem] p-8 sm:p-10">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-3">
             <p className="eyebrow">Training Module</p>
             <div className="space-y-3">
@@ -154,7 +182,7 @@ export function TrainingSession({
       </section>
 
       <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_330px]">
-        <div className="card rounded-[2.1rem] p-8 sm:p-9">
+        <div className="card card-soft rounded-[2.1rem] p-8 sm:p-9">
           <div className="flex items-center justify-between gap-4">
             <p className="text-sm uppercase tracking-[0.24em] text-[var(--muted)]">
               Question {questionIndex + 1} of {questions.length}
@@ -184,14 +212,23 @@ export function TrainingSession({
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <button
               type="button"
+              disabled={loading || isFirstQuestion}
+              onClick={goToPreviousQuestion}
+              className="rounded-full border border-white/8 bg-white/[0.02] px-5 py-3.5 text-sm text-white transition hover:border-[var(--border-strong)] disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              Previous question
+            </button>
+
+            <button
+              type="button"
               disabled={loading}
               onClick={submitAnswer}
-              className="accent-glow rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3.5 text-sm font-medium text-[#061006] disabled:opacity-60"
+              className="accent-button accent-glow rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3.5 text-sm font-medium disabled:opacity-60"
             >
               {loading ? "Grading..." : "Submit for grading"}
             </button>
 
-            {result && !isLastQuestion ? (
+            {(result || currentAttempt) && !isLastQuestion ? (
               <button
                 type="button"
                 onClick={goToNextQuestion}
@@ -203,22 +240,18 @@ export function TrainingSession({
           </div>
 
           {result ? (
-            <div className="mt-10 rounded-[1.9rem] border border-[var(--border-strong)] bg-[linear-gradient(180deg,rgba(151,255,111,0.06),rgba(255,255,255,0.015))] p-6 sm:p-7">
+            <div className={`mt-10 rounded-[1.9rem] border p-6 sm:p-7 ${resultContainerClassName}`}>
               <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded-full border border-white/8 bg-white/[0.02] px-3 py-1 text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                <span className={resultScoreBadgeClassName}>
                   Score {Math.round(result.score)}/100
                 </span>
-                <span
-                  className={`rounded-full px-3 py-1 text-xs uppercase tracking-[0.2em] ${
-                    result.passed ? "bg-[var(--accent)] text-[#061006]" : "border border-white/8 bg-white/[0.02] text-white"
-                  }`}
-                >
+                <span className={`rounded-full px-3 py-1 text-xs uppercase tracking-[0.2em] ${resultStatusBadgeClassName}`}>
                   {result.passed ? "Passed" : "Needs work"}
                 </span>
               </div>
 
               <div className="mt-7 grid gap-6 lg:grid-cols-2">
-                <div className="subtle-panel rounded-[1.5rem] p-5">
+                <div className={resultPanelClassName}>
                   <p className="text-sm uppercase tracking-[0.18em] text-[var(--muted)]">Strengths</p>
                   <ul className="mt-3 space-y-2 text-sm leading-6 text-white">
                     {result.strengths.map((strength) => (
@@ -226,7 +259,7 @@ export function TrainingSession({
                     ))}
                   </ul>
                 </div>
-                <div className="subtle-panel rounded-[1.5rem] p-5">
+                <div className={resultPanelClassName}>
                   <p className="text-sm uppercase tracking-[0.18em] text-[var(--muted)]">Missed points</p>
                   <ul className="mt-3 space-y-2 text-sm leading-6 text-white">
                     {result.missed_points.map((missedPoint) => (
@@ -243,7 +276,7 @@ export function TrainingSession({
                 </div>
                 <div>
                   <p className="text-sm uppercase tracking-[0.18em] text-[var(--muted)]">Ideal rewrite</p>
-                  <p className="mt-3 rounded-[1.5rem] border border-white/8 bg-black/20 p-5 text-sm leading-7 text-white">
+                  <p className={resultRewriteClassName}>
                     {result.ideal_rewrite}
                   </p>
                 </div>
@@ -253,7 +286,7 @@ export function TrainingSession({
         </div>
 
         <aside className="space-y-6">
-          <div className="card rounded-[2rem] p-6">
+          <div className="card card-stat rounded-[2rem] p-6">
             <p className="eyebrow">Questions</p>
             <div className="mt-5 space-y-3">
               {questions.map((item, index) => {
@@ -263,7 +296,7 @@ export function TrainingSession({
                 return (
                   <div
                     key={item.id}
-                    className={`rounded-[1.35rem] border px-4 py-3.5 text-sm ${
+                    className={`rounded-[1.35rem] border px-4 py-4 text-sm ${
                       active
                         ? "border-[var(--border-strong)] bg-[var(--accent-soft)] text-white"
                         : submitted
@@ -272,14 +305,13 @@ export function TrainingSession({
                     }`}
                   >
                     <p className="text-xs uppercase tracking-[0.2em]">Question {index + 1}</p>
-                    <p className="mt-2 line-clamp-3 leading-6">{item.question_text}</p>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          <div className="card rounded-[2rem] p-6">
+          <div className="card card-stat rounded-[2rem] p-6">
             <p className="eyebrow">Status</p>
             <p className="headline mt-4 text-3xl capitalize">{progress.status.replace("_", " ")}</p>
             <p className="mt-3 text-sm leading-7 text-[var(--muted)]">

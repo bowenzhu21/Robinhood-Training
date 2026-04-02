@@ -1,34 +1,41 @@
-import { formatPercent, formatScore } from "@/lib/utils";
+import { formatPercent } from "@/lib/utils";
 
 type DashboardProgressRingProps = {
   completionRate: number;
-  completedQuestions: number;
-  totalQuestions: number;
-  averageScore: number | null;
 };
 
-export function DashboardProgressRing({
-  completionRate,
-  completedQuestions,
-  totalQuestions,
-  averageScore
-}: DashboardProgressRingProps) {
+export function DashboardProgressRing({ completionRate }: DashboardProgressRingProps) {
   const clampedProgress = Math.max(0, Math.min(100, Number.isFinite(completionRate) ? completionRate : 0));
-  const scoreLabel = averageScore === null || Number.isNaN(averageScore) ? "0" : `${Math.round(averageScore)}`;
-  const size = 266;
-  const strokeWidth = 15;
+  const size = 236;
+  const strokeWidth = 14;
   const radius = (size - strokeWidth) / 2;
+  const guideRadius = radius + 12;
+  const innerRadius = radius - 26;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference - (clampedProgress / 100) * circumference;
+  const progressAngle = (clampedProgress / 100) * 360;
+  const progressRadians = (progressAngle * Math.PI) / 180;
+  const progressDotX = size / 2 + radius * Math.cos(progressRadians);
+  const progressDotY = size / 2 + radius * Math.sin(progressRadians);
 
   return (
-    <div className="card overflow-hidden rounded-[2.25rem] p-7 sm:p-8">
+    <div className="card card-progress card-pos-center flex h-full min-h-[21.5rem] flex-col overflow-hidden rounded-[2.25rem] p-6 sm:p-7">
       <p className="eyebrow">Completion Progress</p>
 
-      <div className="mt-7 flex flex-col items-center">
+      <div className="mt-4 flex flex-1 flex-col items-center justify-center">
         <div className="relative flex items-center justify-center">
-          <div className="absolute h-[320px] w-[320px] rounded-full bg-[radial-gradient(circle,rgba(95,191,67,0.18),transparent_64%)] blur-3xl" />
+          <div className="absolute h-[276px] w-[276px] rounded-full bg-[radial-gradient(circle,rgba(95,191,67,0.18),transparent_64%)] blur-3xl" />
           <svg width={size} height={size} className="-rotate-90 overflow-visible">
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={guideRadius}
+              fill="none"
+              stroke="rgba(151,255,111,0.08)"
+              strokeDasharray="2 11"
+              strokeLinecap="round"
+              strokeWidth="1.5"
+            />
             <circle
               cx={size / 2}
               cy={size / 2}
@@ -40,42 +47,48 @@ export function DashboardProgressRing({
             <circle
               cx={size / 2}
               cy={size / 2}
+              r={innerRadius}
+              fill="none"
+              stroke="rgba(151,255,111,0.05)"
+              strokeWidth="1"
+            />
+            <circle
+              cx={size / 2}
+              cy={size / 2}
               r={radius}
               fill="none"
               stroke="url(#progressGradient)"
+              filter="url(#progressGlow)"
               strokeLinecap="round"
               strokeWidth={strokeWidth}
               strokeDasharray={circumference}
               strokeDashoffset={dashOffset}
             />
+            {clampedProgress > 0 ? (
+              <g filter="url(#progressDotGlow)">
+                <circle cx={progressDotX} cy={progressDotY} r="4.5" fill="var(--accent)" />
+                <circle cx={progressDotX} cy={progressDotY} r="9" fill="rgba(151,255,111,0.16)" />
+              </g>
+            ) : null}
             <defs>
               <linearGradient id="progressGradient" x1="0%" x2="100%" y1="0%" y2="0%">
-                <stop offset="0%" stopColor="var(--accent)" />
-                <stop offset="100%" stopColor="var(--accent-strong)" />
+                <stop offset="0%" stopColor="var(--accent-strong)" />
+                <stop offset="55%" stopColor="var(--accent)" />
+                <stop offset="100%" stopColor="#b4ff93" />
               </linearGradient>
+              <filter id="progressGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="rgba(151,255,111,0.45)" />
+              </filter>
+              <filter id="progressDotGlow" x="-100%" y="-100%" width="300%" height="300%">
+                <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="rgba(151,255,111,0.35)" />
+              </filter>
             </defs>
           </svg>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <p className="headline text-6xl">{formatPercent(clampedProgress)}</p>
-            <p className="mt-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Complete</p>
-          </div>
-        </div>
-
-        <div className="relative z-10 -mt-12 grid w-full max-w-[460px] grid-cols-2 items-stretch gap-3 px-2">
-          <div className="flex min-h-[152px] flex-col rounded-[1.6rem] border border-white/6 bg-white/[0.005] p-5 shadow-[0_14px_40px_rgba(0,0,0,0.08)] backdrop-blur-xl">
-            <p className="whitespace-nowrap text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">Questions Done</p>
-            <div className="flex flex-1 items-center justify-center">
-              <p className="text-center text-[2.35rem] leading-none text-white">
-              {completedQuestions}/{totalQuestions}
-              </p>
-            </div>
-          </div>
-          <div className="flex min-h-[152px] flex-col rounded-[1.6rem] border border-white/6 bg-white/[0.005] p-5 shadow-[0_14px_40px_rgba(0,0,0,0.08)] backdrop-blur-xl">
-            <p className="text-[0.68rem] uppercase tracking-[0.22em] text-[var(--muted)]">Average Score</p>
-            <div className="flex flex-1 items-center justify-center">
-              <p className="text-center text-[2.35rem] leading-none text-white">{scoreLabel}</p>
-            </div>
+            <div className="absolute h-[146px] w-[146px] rounded-full border border-white/[0.03] bg-[radial-gradient(circle,rgba(151,255,111,0.055),rgba(7,10,8,0.14)_58%,transparent_78%)]" />
+            <p className="headline text-5xl sm:text-[4.5rem]">{formatPercent(clampedProgress)}</p>
+            <p className="mt-2 text-[0.7rem] uppercase tracking-[0.18em] text-[var(--muted)]">Complete</p>
           </div>
         </div>
       </div>

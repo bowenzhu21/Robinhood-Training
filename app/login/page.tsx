@@ -5,7 +5,7 @@ export default async function LoginPage() {
   await redirectIfAuthenticated();
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl items-center px-6 py-20">
+    <main className="page-shell flex min-h-screen items-center py-20">
       <div className="grid w-full gap-16 lg:grid-cols-[minmax(0,1.15fr)_430px] lg:items-center">
         <section className="space-y-10">
           <div className="inline-flex items-center gap-3 rounded-full border border-white/8 bg-white/[0.02] px-4 py-2 text-xs uppercase tracking-[0.28em] text-[var(--muted)]">

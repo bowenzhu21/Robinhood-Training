@@ -64,7 +64,7 @@ export function AuthForm() {
   }
 
   return (
-    <div className="card w-full max-w-md rounded-[2.2rem] p-8 sm:p-9">
+    <div className="card card-soft w-full max-w-md rounded-[2.2rem] p-8 sm:p-9">
       <div className="mb-8 flex rounded-full border border-white/8 bg-white/[0.02] p-1">
         {(["login", "signup"] as const).map((value) => (
           <button
@@ -72,7 +72,7 @@ export function AuthForm() {
             type="button"
             onClick={() => setMode(value)}
             className={`flex-1 rounded-full px-4 py-2 text-sm capitalize transition ${
-              mode === value ? "bg-[var(--accent)] text-[#061006]" : "text-[var(--muted)]"
+              mode === value ? "accent-button bg-[var(--accent)]" : "text-[var(--muted)]"
             }`}
           >
             {value === "signup" ? "Create account" : "Log in"}
@@ -125,7 +125,7 @@ export function AuthForm() {
         <button
           type="submit"
           disabled={loading}
-          className="accent-glow mt-2 w-full rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3.5 text-sm font-medium text-[#061006] disabled:opacity-60"
+          className="accent-button accent-glow mt-2 w-full rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3.5 text-sm font-medium disabled:opacity-60"
         >
           {loading ? "Please wait..." : mode === "login" ? "Log in" : "Create account"}
         </button>

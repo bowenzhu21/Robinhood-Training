@@ -36,7 +36,7 @@ export default async function TrainingPage({ params }: TrainingPageProps) {
     <div>
       <TopNav currentPath="/modules" />
 
-      <main className="mx-auto max-w-6xl px-6 py-10">
+      <main className="page-shell py-10">
         <TrainingSession
           moduleId={moduleId}
           moduleTitle={module.title}

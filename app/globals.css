@@ -61,19 +61,199 @@ textarea {
     var(--background);
 }
 
+.page-shell {
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 2.2vw, 1.4rem);
+}
+
 .card {
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, var(--panel) 0%, var(--panel-strong) 100%);
+  --card-accent-primary: rgba(151, 255, 111, 0.08);
+  --card-accent-secondary: rgba(151, 255, 111, 0.035);
+  --card-accent-primary-position: top right;
+  --card-accent-secondary-position: top left;
+  --card-surface-start: rgba(10, 13, 11, 0.96);
+  --card-surface-end: rgba(7, 9, 8, 0.98);
+  --card-top-line: linear-gradient(90deg, transparent 0%, rgba(151, 255, 111, 0.42) 18%, rgba(151, 255, 111, 0.12) 55%, transparent 100%);
+  --card-top-line-opacity: 0.7;
+  --card-orb: radial-gradient(circle, rgba(151, 255, 111, 0.18), transparent 68%);
+  --card-orb-opacity: 0.42;
+  --card-orb-top: -22%;
+  --card-orb-right: -10%;
+  --card-orb-left: auto;
+  --card-orb-width: 45%;
+  --card-orb-height: 48%;
+  --card-orb-transform: none;
+  --card-border-color: var(--border);
+  --card-glow: rgba(125, 244, 90, 0.05);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--card-border-color);
+  background:
+    radial-gradient(circle at var(--card-accent-primary-position), var(--card-accent-primary), transparent 34%),
+    radial-gradient(circle at var(--card-accent-secondary-position), var(--card-accent-secondary), transparent 24%),
+    linear-gradient(180deg, var(--card-surface-start) 0%, var(--card-surface-end) 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.02),
     0 0 0 1px rgba(255, 255, 255, 0.01),
     0 18px 80px rgba(0, 0, 0, 0.32),
-    0 0 30px rgba(125, 244, 90, 0.035);
+    0 0 34px var(--card-glow);
   backdrop-filter: blur(18px);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: var(--card-top-line);
+  opacity: var(--card-top-line-opacity);
+  pointer-events: none;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  top: var(--card-orb-top);
+  right: var(--card-orb-right);
+  left: var(--card-orb-left);
+  width: var(--card-orb-width);
+  height: var(--card-orb-height);
+  background: var(--card-orb);
+  filter: blur(32px);
+  opacity: var(--card-orb-opacity);
+  transform: var(--card-orb-transform);
+  pointer-events: none;
+}
+
+.card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.card-welcome {
+  --card-accent-primary: rgba(151, 255, 111, 0.05);
+  --card-accent-secondary: rgba(151, 255, 111, 0.018);
+  --card-surface-start: rgba(9, 12, 10, 0.96);
+  --card-surface-end: rgba(6, 8, 7, 0.985);
+  --card-orb-opacity: 0.3;
+  --card-glow: rgba(125, 244, 90, 0.025);
+}
+
+.card-stat {
+  --card-accent-primary: rgba(151, 255, 111, 0.05);
+  --card-accent-secondary: rgba(151, 255, 111, 0.018);
+  --card-surface-start: rgba(11, 15, 12, 0.98);
+  --card-surface-end: rgba(8, 11, 9, 0.985);
+  --card-top-line-opacity: 0.52;
+  --card-orb: radial-gradient(circle, rgba(151, 255, 111, 0.14), transparent 70%);
+  --card-orb-opacity: 0.34;
+  --card-glow: rgba(125, 244, 90, 0.028);
+}
+
+.card-progress {
+  --card-accent-primary: rgba(151, 255, 111, 0.055);
+  --card-accent-secondary: rgba(151, 255, 111, 0.022);
+  --card-surface-start: rgba(10, 14, 11, 0.98);
+  --card-surface-end: rgba(7, 10, 8, 0.985);
+  --card-border-color: rgba(201, 255, 190, 0.095);
+  --card-top-line-opacity: 0.58;
+  --card-orb: radial-gradient(circle, rgba(151, 255, 111, 0.14), transparent 68%);
+  --card-orb-opacity: 0.28;
+  --card-glow: rgba(125, 244, 90, 0.035);
+}
+
+.card-module {
+  --card-accent-primary: rgba(151, 255, 111, 0.09);
+  --card-accent-secondary: rgba(151, 255, 111, 0.028);
+  --card-surface-start: rgba(10, 14, 11, 0.97);
+  --card-surface-end: rgba(7, 10, 8, 0.985);
+  --card-top-line-opacity: 0.74;
+  --card-orb-opacity: 0.38;
+  --card-glow: rgba(125, 244, 90, 0.045);
+}
+
+.card-module-lime {
+  --card-accent-primary: rgba(151, 255, 111, 0.1);
+  --card-accent-secondary: rgba(151, 255, 111, 0.03);
+  --card-top-line-opacity: 0.78;
+  --card-orb-opacity: 0.42;
+}
+
+.card-module-mint {
+  --card-accent-primary: rgba(118, 255, 183, 0.075);
+  --card-accent-secondary: rgba(151, 255, 111, 0.02);
+  --card-top-line: linear-gradient(90deg, transparent 0%, rgba(118, 255, 183, 0.28) 22%, rgba(151, 255, 111, 0.12) 58%, transparent 100%);
+  --card-orb: radial-gradient(circle, rgba(118, 255, 183, 0.15), transparent 68%);
+  --card-orb-opacity: 0.34;
+  --card-glow: rgba(118, 255, 183, 0.032);
+}
+
+.card-module-gold {
+  --card-accent-primary: rgba(207, 255, 133, 0.07);
+  --card-accent-secondary: rgba(151, 255, 111, 0.018);
+  --card-top-line: linear-gradient(90deg, transparent 0%, rgba(207, 255, 133, 0.28) 18%, rgba(151, 255, 111, 0.1) 55%, transparent 100%);
+  --card-orb: radial-gradient(circle, rgba(207, 255, 133, 0.14), transparent 68%);
+  --card-orb-opacity: 0.33;
+  --card-glow: rgba(194, 240, 119, 0.03);
+}
+
+.card-module-emerald {
+  --card-accent-primary: rgba(90, 220, 145, 0.075);
+  --card-accent-secondary: rgba(151, 255, 111, 0.018);
+  --card-top-line: linear-gradient(90deg, transparent 0%, rgba(90, 220, 145, 0.28) 18%, rgba(151, 255, 111, 0.08) 55%, transparent 100%);
+  --card-orb: radial-gradient(circle, rgba(90, 220, 145, 0.16), transparent 68%);
+  --card-orb-opacity: 0.34;
+  --card-glow: rgba(90, 220, 145, 0.03);
+}
+
+.card-soft {
+  --card-accent-primary: rgba(151, 255, 111, 0.045);
+  --card-accent-secondary: rgba(151, 255, 111, 0.02);
+  --card-surface-start: rgba(10, 13, 11, 0.96);
+  --card-surface-end: rgba(8, 10, 9, 0.98);
+  --card-orb-opacity: 0.24;
+  --card-glow: rgba(125, 244, 90, 0.02);
+}
+
+.card-pos-left {
+  --card-accent-primary-position: top right;
+  --card-accent-secondary-position: top left;
+  --card-top-line: linear-gradient(90deg, transparent 0%, rgba(151, 255, 111, 0.16) 38%, rgba(151, 255, 111, 0.34) 78%, transparent 100%);
+  --card-orb-right: -8%;
+  --card-orb-left: auto;
+}
+
+.card-pos-center {
+  --card-accent-primary-position: top center;
+  --card-accent-secondary-position: center center;
+  --card-top-line: linear-gradient(90deg, transparent 0%, rgba(151, 255, 111, 0.16) 24%, rgba(151, 255, 111, 0.16) 76%, transparent 100%);
+  --card-orb-top: -18%;
+  --card-orb-left: 50%;
+  --card-orb-right: auto;
+  --card-orb-width: 54%;
+  --card-orb-height: 42%;
+  --card-orb-transform: translateX(-50%);
+}
+
+.card-pos-right {
+  --card-accent-primary-position: top left;
+  --card-accent-secondary-position: top right;
+  --card-top-line: linear-gradient(90deg, transparent 0%, rgba(151, 255, 111, 0.42) 26%, rgba(151, 255, 111, 0.12) 62%, transparent 100%);
+  --card-orb-left: -10%;
+  --card-orb-right: auto;
 }
 
 .accent-glow {
   box-shadow: 0 0 0 1px rgba(151, 255, 111, 0.06), 0 0 30px rgba(151, 255, 111, 0.14);
+}
+
+.accent-button {
+  color: #061006 !important;
+  text-shadow: none;
+  -webkit-text-fill-color: #061006;
 }
 
 .headline {
@@ -90,8 +270,11 @@ textarea {
 }
 
 .subtle-panel {
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(201, 255, 190, 0.05);
+  background:
+    radial-gradient(circle at top right, rgba(151, 255, 111, 0.04), transparent 42%),
+    rgba(255, 255, 255, 0.015);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.015);
 }
 
 .fine-border {

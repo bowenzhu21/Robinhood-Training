@@ -70,45 +70,90 @@ async function saveAttempt(input: {
   traineeAnswer: string;
   result: ReturnType<typeof gradeWithGemini> extends Promise<infer T> ? T : never;
 }) {
-  const fullPayload = {
-    user_id: input.userId,
-    module_id: input.moduleId,
-    question_id: input.questionId,
-    trainee_answer: input.traineeAnswer,
-    score: input.result.score,
-    passed: input.result.passed,
-    rubric_scores: input.result.rubric_scores,
-    strengths: input.result.strengths,
-    missed_points: input.result.missed_points,
-    feedback_to_agent: input.result.feedback_to_agent,
-    ideal_rewrite: input.result.ideal_rewrite
-  };
+  const candidatePayloads = [
+    {
+      // Richest payload for schemas that keep both the raw response text and detailed grading output.
+      user_id: input.userId,
+      module_id: input.moduleId,
+      question_id: input.questionId,
+      trainee_answer: input.traineeAnswer,
+      response_text: input.traineeAnswer,
+      score: input.result.score,
+      passed: input.result.passed,
+      rubric_scores: input.result.rubric_scores,
+      strengths: input.result.strengths,
+      missed_points: input.result.missed_points,
+      feedback_to_agent: input.result.feedback_to_agent,
+      ideal_rewrite: input.result.ideal_rewrite
+    },
+    {
+      // Some leaner schemas use response_text instead of trainee_answer.
+      user_id: input.userId,
+      module_id: input.moduleId,
+      question_id: input.questionId,
+      response_text: input.traineeAnswer,
+      score: input.result.score,
+      passed: input.result.passed,
+      rubric_scores: input.result.rubric_scores,
+      strengths: input.result.strengths,
+      missed_points: input.result.missed_points,
+      feedback_to_agent: input.result.feedback_to_agent,
+      ideal_rewrite: input.result.ideal_rewrite
+    },
+    {
+      // Fallback for tables that keep a smaller attempt record but still require the typed response.
+      user_id: input.userId,
+      question_id: input.questionId,
+      trainee_answer: input.traineeAnswer,
+      response_text: input.traineeAnswer,
+      score: input.result.score,
+      passed: input.result.passed
+    },
+    {
+      user_id: input.userId,
+      question_id: input.questionId,
+      response_text: input.traineeAnswer,
+      score: input.result.score,
+      passed: input.result.passed
+    },
+    {
+      user_id: input.userId,
+      question_id: input.questionId,
+      trainee_answer: input.traineeAnswer,
+      score: input.result.score,
+      passed: input.result.passed
+    },
+    {
+      user_id: input.userId,
+      question_id: input.questionId,
+      response_text: input.traineeAnswer,
+      score: input.result.score
+    },
+    {
+      user_id: input.userId,
+      question_id: input.questionId,
+      trainee_answer: input.traineeAnswer,
+      score: input.result.score
+    }
+  ];
 
-  const fullInsert = await supabaseAdmin.from("attempts").insert(fullPayload).select("id, question_id, score, passed").single();
+  let lastErrorMessage = "unknown error";
 
-  if (!fullInsert.error && fullInsert.data) {
-    return fullInsert.data;
+  for (const payload of candidatePayloads) {
+    const { error } = await supabaseAdmin.from("attempts").insert(payload);
+
+    if (!error) {
+      return {
+        question_id: input.questionId,
+        score: input.result.score,
+        passed: input.result.passed
+      };
+    }
+
+    lastErrorMessage = error.message;
   }
 
-  const fallbackPayload = {
-    user_id: input.userId,
-    question_id: input.questionId,
-    trainee_answer: input.traineeAnswer,
-    score: input.result.score,
-    passed: input.result.passed
-  };
-
-  const fallbackInsert = await supabaseAdmin
-    .from("attempts")
-    .insert(fallbackPayload)
-    .select("id, question_id, score, passed")
-    .single();
-
-  if (!fallbackInsert.error && fallbackInsert.data) {
-    return fallbackInsert.data;
-  }
-
-  throw new Error(`Failed to save attempt: ${fallbackInsert.error?.message ?? fullInsert.error?.message ?? "unknown error"}`);
+  throw new Error(`Failed to save attempt: ${lastErrorMessage}`);
 }
 
 export async function POST(request: Request) {

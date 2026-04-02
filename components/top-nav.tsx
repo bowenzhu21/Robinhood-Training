@@ -15,7 +15,7 @@ const navItems = [
 export function TopNav({ currentPath }: TopNavProps) {
   return (
     <header className="border-b border-white/6">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
+      <div className="page-shell flex items-center justify-between py-5">
         <Link href="/dashboard" className="flex items-center gap-3">
           <span className="h-2.5 w-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_18px_rgba(151,255,111,0.9)]" />
           <div className="leading-none">

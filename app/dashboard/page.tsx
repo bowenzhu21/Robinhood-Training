@@ -18,26 +18,37 @@ export default async function DashboardPage() {
     typeof user.user_metadata?.full_name === "string"
       ? user.user_metadata.full_name.split(" ")[0]
       : user.email?.split("@")[0] ?? "Agent";
+  const averageScoreLabel =
+    summary.averageScore === null || Number.isNaN(summary.averageScore) ? "0" : `${Math.round(summary.averageScore)}`;
+  const remainingInCurrentModule = resumeModule
+    ? Math.max(resumeModule.totalQuestions - resumeModule.completedQuestions, 0)
+    : 0;
+  const questionsCaption = resumeModule
+    ? remainingInCurrentModule === 0
+      ? "current module is complete"
+      : `${remainingInCurrentModule} remaining in current module`
+    : "no module selected yet";
+  const gradedResponses = summary.completedQuestions;
+  const averageCaption = `based on ${gradedResponses} graded response${gradedResponses === 1 ? "" : "s"}`;
 
   return (
     <div>
       <TopNav currentPath="/dashboard" />
 
-      <main className="mx-auto max-w-6xl px-6 py-12">
-        <section className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_420px]">
-          <div className="card rounded-[2.25rem] p-8 sm:p-10">
+      <main className="page-shell py-12">
+        <section className="grid gap-6 xl:grid-cols-12 xl:items-stretch">
+          <div className="card card-welcome card-pos-left rounded-[2.25rem] p-7 sm:p-8 xl:col-span-5 xl:h-full">
             <p className="eyebrow">Welcome back</p>
-            <h1 className="headline mt-6 text-5xl sm:text-6xl">{firstName}</h1>
-            <p className="mt-6 max-w-2xl text-[1.02rem] leading-8 text-[var(--muted)]">
-              Continue your customer service onboarding. Each question is graded immediately so agents can tighten
-              empathy, clarity, and next-step execution as they go.
+            <h1 className="headline mt-18 text-5xl sm:text-6xl">{firstName}</h1>
+            <p className="mt-4 max-w-lg text-[0.98rem] leading-8 text-[var(--muted)]">
+              Continue your customer support training modules.
             </p>
 
             {resumeModule ? (
-              <div className="mt-12 flex flex-wrap items-center gap-4">
+              <div className="mt-7 flex flex-wrap items-center gap-4">
                 <Link
                   href={`/training/${resumeModule.id}`}
-                  className="accent-glow rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3.5 text-sm font-semibold text-[#061006] transition hover:brightness-105"
+                  className="accent-button accent-glow rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 py-3.5 text-sm font-semibold transition hover:brightness-105"
                 >
                   Continue training
                 </Link>
@@ -48,19 +59,40 @@ export default async function DashboardPage() {
                   View modules
                 </Link>
               </div>
-            ) : null}
+              ) : null}
           </div>
 
-          <DashboardProgressRing
-            completionRate={summary.completionRate}
-            completedQuestions={summary.completedQuestions}
-            totalQuestions={summary.totalQuestions}
-            averageScore={summary.averageScore}
-          />
+          <div className="xl:col-span-4">
+            <DashboardProgressRing completionRate={summary.completionRate} />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:col-span-3 xl:grid-cols-1 xl:grid-rows-2 xl:h-full">
+            <div className="card card-stat card-pos-right flex min-h-[10.75rem] flex-col rounded-[1.7rem] p-6 xl:h-full">
+              <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[var(--muted)]">
+                Questions Done
+              </p>
+              <div className="flex flex-1 flex-col items-center justify-center pt-6 text-center">
+                <p className="headline text-[3rem] leading-none text-white">
+                  {summary.completedQuestions}/{summary.totalQuestions}
+                </p>
+                <p className="mt-4 max-w-[14rem] text-sm leading-6 text-[var(--muted)]">{questionsCaption}</p>
+              </div>
+            </div>
+
+            <div className="card card-stat card-pos-right flex min-h-[10.75rem] flex-col rounded-[1.7rem] p-6 xl:h-full">
+              <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[var(--muted)]">
+                Average Score
+              </p>
+              <div className="flex flex-1 flex-col items-center justify-center pt-6 text-center">
+                <p className="headline text-[3rem] leading-none text-white">{averageScoreLabel}</p>
+                <p className="mt-4 max-w-[14rem] text-sm leading-6 text-[var(--muted)]">{averageCaption}</p>
+              </div>
+            </div>
+          </div>
         </section>
 
         {resumeModule ? (
-          <section className="mt-14 space-y-6">
+          <section className="mt-12 space-y-6">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="eyebrow">Up Next</p>

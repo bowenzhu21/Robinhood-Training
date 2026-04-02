@@ -74,9 +74,7 @@ export async function getLatestAttemptsForModule(userId: string, moduleId: strin
 
   const { data, error } = await supabaseAdmin
     .from("attempts")
-    .select(
-      "id, user_id, question_id, trainee_answer, score, passed, rubric_scores, strengths, missed_points, feedback_to_agent, ideal_rewrite, created_at"
-    )
+    .select("question_id, created_at")
     .eq("user_id", userId)
     .in("question_id", questionIds)
     .order("created_at", { ascending: false });
@@ -85,14 +83,17 @@ export async function getLatestAttemptsForModule(userId: string, moduleId: strin
     throw new Error(`Failed to load attempts: ${error.message}`);
   }
 
-  const latestByQuestion = new Map<string, AttemptRecord>();
+  const latestByQuestion = new Map<
+    string,
+    {
+      question_id: string;
+      created_at: string | null;
+    }
+  >();
 
-  for (const attempt of (data ?? []) as Array<Omit<AttemptRecord, "module_id">>) {
+  for (const attempt of (data ?? []) as Array<{ question_id: string; created_at: string | null }>) {
     if (!latestByQuestion.has(attempt.question_id)) {
-      latestByQuestion.set(attempt.question_id, {
-        ...attempt,
-        module_id: moduleId
-      });
+      latestByQuestion.set(attempt.question_id, attempt);
     }
   }
 
