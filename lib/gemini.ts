@@ -1,12 +1,19 @@
 import { z } from "zod";
 
 import { env } from "@/lib/env";
+import { PASSING_SCORE, RUBRIC_SCORE_MAX, emptyRubricScores } from "@/lib/training";
 import type { GradeResult } from "@/lib/types";
 
 const gradeSchema = z.object({
   score: z.number().min(0).max(100),
   passed: z.boolean(),
-  rubric_scores: z.record(z.union([z.number(), z.string(), z.boolean(), z.null()])),
+  rubric_scores: z.object({
+    empathy: z.number().min(0).max(RUBRIC_SCORE_MAX),
+    professionalism: z.number().min(0).max(RUBRIC_SCORE_MAX),
+    clarity: z.number().min(0).max(RUBRIC_SCORE_MAX),
+    factual_accuracy: z.number().min(0).max(RUBRIC_SCORE_MAX),
+    next_step_clarity: z.number().min(0).max(RUBRIC_SCORE_MAX)
+  }),
   strengths: z.array(z.string()),
   missed_points: z.array(z.string()),
   feedback_to_agent: z.string(),
@@ -23,7 +30,7 @@ type GradeInput = {
 const fallbackInvalidJsonResult: GradeResult = {
   score: 0,
   passed: false,
-  rubric_scores: {},
+  rubric_scores: emptyRubricScores(),
   strengths: [],
   missed_points: [],
   feedback_to_agent:
@@ -51,16 +58,29 @@ function buildPrompt(input: GradeInput) {
     JSON.stringify({
       score: 0,
       passed: true,
-      rubric_scores: {},
+      rubric_scores: {
+        empathy: 0,
+        professionalism: 0,
+        clarity: 0,
+        factual_accuracy: 0,
+        next_step_clarity: 0
+      },
       strengths: [],
       missed_points: [],
       feedback_to_agent: "",
       ideal_rewrite: ""
     }),
     "",
+    "Use rubric_scores to score each coaching dimension from 0 to 5:",
+    "- empathy",
+    "- professionalism",
+    "- clarity",
+    "- factual_accuracy",
+    "- next_step_clarity",
+    "",
     "Use a simple pass threshold like:",
     "",
-    "80 and up = pass",
+    `${PASSING_SCORE} and up = pass`,
     "",
     "User payload:",
     "",
@@ -164,6 +184,6 @@ export async function gradeWithGemini(input: GradeInput): Promise<GradeResult> {
 
   return {
     ...parsed.data,
-    passed: parsed.data.score >= 80
+    passed: parsed.data.score >= PASSING_SCORE
   };
 }

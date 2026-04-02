@@ -4,6 +4,7 @@ import { z } from "zod";
 import { gradeWithGemini } from "@/lib/gemini";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { PASSING_SCORE } from "@/lib/training";
 import { average } from "@/lib/utils";
 
 const requestSchema = z.object({
@@ -70,6 +71,7 @@ async function saveAttempt(input: {
   traineeAnswer: string;
   result: ReturnType<typeof gradeWithGemini> extends Promise<infer T> ? T : never;
 }) {
+  const createdAt = new Date().toISOString();
   const candidatePayloads = [
     {
       // Richest payload for schemas that keep both the raw response text and detailed grading output.
@@ -84,7 +86,8 @@ async function saveAttempt(input: {
       strengths: input.result.strengths,
       missed_points: input.result.missed_points,
       feedback_to_agent: input.result.feedback_to_agent,
-      ideal_rewrite: input.result.ideal_rewrite
+      ideal_rewrite: input.result.ideal_rewrite,
+      created_at: createdAt
     },
     {
       // Some leaner schemas use response_text instead of trainee_answer.
@@ -98,7 +101,8 @@ async function saveAttempt(input: {
       strengths: input.result.strengths,
       missed_points: input.result.missed_points,
       feedback_to_agent: input.result.feedback_to_agent,
-      ideal_rewrite: input.result.ideal_rewrite
+      ideal_rewrite: input.result.ideal_rewrite,
+      created_at: createdAt
     },
     {
       // Fallback for tables that keep a smaller attempt record but still require the typed response.
@@ -107,33 +111,38 @@ async function saveAttempt(input: {
       trainee_answer: input.traineeAnswer,
       response_text: input.traineeAnswer,
       score: input.result.score,
-      passed: input.result.passed
+      passed: input.result.passed,
+      created_at: createdAt
     },
     {
       user_id: input.userId,
       question_id: input.questionId,
       response_text: input.traineeAnswer,
       score: input.result.score,
-      passed: input.result.passed
+      passed: input.result.passed,
+      created_at: createdAt
     },
     {
       user_id: input.userId,
       question_id: input.questionId,
       trainee_answer: input.traineeAnswer,
       score: input.result.score,
-      passed: input.result.passed
+      passed: input.result.passed,
+      created_at: createdAt
     },
     {
       user_id: input.userId,
       question_id: input.questionId,
       response_text: input.traineeAnswer,
-      score: input.result.score
+      score: input.result.score,
+      created_at: createdAt
     },
     {
       user_id: input.userId,
       question_id: input.questionId,
       trainee_answer: input.traineeAnswer,
-      score: input.result.score
+      score: input.result.score,
+      created_at: createdAt
     }
   ];
 
@@ -146,7 +155,9 @@ async function saveAttempt(input: {
       return {
         question_id: input.questionId,
         score: input.result.score,
-        passed: input.result.passed
+        passed: input.result.passed,
+        response_text: input.traineeAnswer,
+        created_at: createdAt
       };
     }
 
@@ -228,18 +239,28 @@ export async function POST(request: Request) {
       throw new Error(`Failed to read attempts: ${attemptsError.message}`);
     }
 
-    const latestByQuestion = new Map<string, number>();
+    const latestByQuestion = new Map<
+      string,
+      {
+        score: number;
+        passed: boolean;
+      }
+    >();
 
     for (const latestAttempt of latestAttempts ?? []) {
       const questionId = latestAttempt.question_id as string;
-      if (!latestByQuestion.has(questionId)) {
-        latestByQuestion.set(questionId, Number(latestAttempt.score));
-      }
+      const score = Number(latestAttempt.score);
+      const existing = latestByQuestion.get(questionId);
+
+      latestByQuestion.set(questionId, {
+        score: existing ? Math.max(existing.score, score) : score,
+        passed: Boolean(existing?.passed) || score >= PASSING_SCORE
+      });
     }
 
-    const completedQuestions = latestByQuestion.size;
+    const completedQuestions = Array.from(latestByQuestion.values()).filter((attemptSummary) => attemptSummary.passed).length;
     const total = totalQuestions ?? 0;
-    const averageScore = average(Array.from(latestByQuestion.values()));
+    const averageScore = average(Array.from(latestByQuestion.values()).map((attemptSummary) => attemptSummary.score));
     const status = completedQuestions === 0 ? "not_started" : completedQuestions >= total ? "completed" : "in_progress";
 
     // Save progress when possible, but do not fail grading if the progress table is a leaner MVP schema.
@@ -264,7 +285,9 @@ export async function POST(request: Request) {
       attempt: {
         questionId: attempt.question_id as string,
         score: Number(attempt.score),
-        passed: Boolean(attempt.passed)
+        passed: Boolean(attempt.passed),
+        responseText: attempt.response_text as string,
+        createdAt: attempt.created_at as string
       }
     });
   } catch (error) {

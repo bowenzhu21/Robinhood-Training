@@ -1,3 +1,5 @@
+import type { RubricScores } from "@/lib/training";
+
 export type QuestionRecord = {
   id: string;
   module_id: string;
@@ -24,7 +26,7 @@ export type AttemptRecord = {
   trainee_answer: string;
   score: number;
   passed: boolean;
-  rubric_scores: Record<string, number | string | boolean | null>;
+  rubric_scores: RubricScores;
   strengths: string[];
   missed_points: string[];
   feedback_to_agent: string;
@@ -59,9 +61,18 @@ export type ModuleLibraryItem = ModuleRecord & {
 export type GradeResult = {
   score: number;
   passed: boolean;
-  rubric_scores: Record<string, number | string | boolean | null>;
+  rubric_scores: RubricScores;
   strengths: string[];
   missed_points: string[];
   feedback_to_agent: string;
   ideal_rewrite: string;
+};
+
+export type TrainingAttemptRecord = {
+  question_id: string;
+  score: number;
+  passed: boolean;
+  result: GradeResult | null;
+  response_text: string | null;
+  created_at: string | null;
 };

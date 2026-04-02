@@ -1,16 +1,24 @@
 # Customer Service Training MVP
 
-A clean internal training app for support agents built with Next.js App Router, TypeScript, Tailwind CSS, Supabase, and the Gemini API.
+A premium dark internal training app for customer support agents built with Next.js App Router, TypeScript, Tailwind CSS, Supabase, and the Gemini API.
 
-## What this MVP does
+## What the app does
 
 - Email/password login with Supabase Auth
-- Dashboard with module progress and average score
-- Modules library with simple cards
-- Training flow with one question at a time
-- Server-side Gemini grading
-- Attempt saving and module progress tracking in Supabase
+- Dashboard with overall completion, average score, and next module resume state
+- Modules library with progress-aware training cards
+- One-question-at-a-time training flow
+- Server-side Gemini grading with structured JSON feedback
+- Saved attempts and progress tracking in Supabase
 - Seed script for loading `training-questions.json` into Supabase
+
+## Current training rules
+
+- Questions are graded on a `0-100` scale
+- `80` and above counts as a pass
+- A question is only considered completed once the trainee passes it
+- The trainee cannot move to the next question until the current question passes
+- If a trainee revisits a previously answered question, the latest saved grading result is restored when available
 
 ## Tech stack
 
@@ -20,36 +28,6 @@ A clean internal training app for support agents built with Next.js App Router, 
 - Supabase
 - Gemini API
 - Vercel-friendly route handlers
-
-## Environment variables
-
-Create a `.env.local` file inside `customer-service-training`:
-
-```bash
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-GEMINI_API_KEY=your_gemini_api_key
-GEMINI_MODEL=gemini-2.5-flash
-```
-
-`GEMINI_MODEL` is optional. The app defaults to `gemini-2.5-flash`.
-
-## Expected Supabase columns
-
-This project assumes these columns already exist:
-
-- `profiles`: `id`, `email`, `full_name`
-- `modules`: `id`, `title`, `description`, `category`, `difficulty`
-- `questions`: `id`, `module_id`, `question_text`, `benchmark_answer`, `rubric`, `difficulty`, `order_index`
-- `attempts`: `id`, `user_id`, `module_id`, `question_id`, `trainee_answer`, `score`, `passed`, `rubric_scores`, `strengths`, `missed_points`, `feedback_to_agent`, `ideal_rewrite`, `created_at`
-- `module_progress`: `user_id`, `module_id`, `completed_questions`, `total_questions`, `average_score`, `last_question_id`, `status`, `last_attempted_at`, `completed_at`
-
-Recommended unique constraints:
-
-- `modules(title)`
-- `questions(module_id, question_text)`
-- `module_progress(user_id, module_id)`
 
 ## Getting started
 
@@ -65,13 +43,40 @@ cd customer-service-training
 npm install
 ```
 
-3. Start the local app:
+3. Create `customer-service-training/.env.local`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-2.5-flash
+```
+
+4. Start the app:
 
 ```bash
 npm run dev
 ```
 
-4. Open `http://localhost:3000`
+5. Open `http://localhost:3000`
+
+`GEMINI_MODEL` is optional. The app defaults to `gemini-2.5-flash`.
+
+## Important environment notes
+
+- `SUPABASE_SERVICE_ROLE_KEY` must be the real Supabase `service_role` key, not another anon key
+- If you add or change env vars, restart the Next.js dev server
+- Gemini is called server-side only; secrets are never sent to the browser
+
+## Available scripts
+
+```bash
+npm run dev
+npm run build
+npm run start
+npm run seed
+```
 
 ## Seed the database
 
@@ -83,37 +88,122 @@ Run it with:
 npm run seed
 ```
 
-What the script does:
+What it does:
 
-- Groups rows by `module_title`
-- Checks whether each module already exists by title
-- Creates the module if it does not exist
-- Loads existing questions for that module
-- Inserts only new questions for that module
-- Skips exact duplicate question text within the database and within the same seed file
-- Stores `rubric` as a JSON array so it lands in a `jsonb` column correctly
+- groups records by `module_title`
+- creates a module if it does not already exist
+- inserts related questions for that module
+- skips exact duplicate question text already in the database
+- skips exact duplicate question text repeated inside the JSON file
+- stores `rubric` as an array so it lands correctly in a `jsonb` column
 
-Expected file shape:
+The script expects:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+If seeding fails with a row-level security error, the usual cause is that `SUPABASE_SERVICE_ROLE_KEY` is not actually a service-role key.
+
+## Expected `training-questions.json` shape
 
 ```json
 [
   {
-    "module_title": "Handling Refund Requests",
-    "module_description": "Basic refund and order issue handling",
-    "category": "refunds",
+    "module_title": "Account Access and Login Support",
+    "module_description": "Handling login, verification, and account access concerns with clear security-focused guidance.",
+    "category": "account_access",
     "difficulty": "easy",
-    "question_text": "A customer says they were charged twice for the same order. How should you respond?",
-    "benchmark_answer": "A strong response should acknowledge the issue, apologize, confirm the order details, explain that you will review the duplicate charge, and provide the next steps or escalation path.",
-    "rubric": ["shows empathy", "apologizes clearly", "confirms order details"]
+    "question_text": "A customer says they forgot their password and can no longer access their account. How should you respond?",
+    "benchmark_answer": "A strong response should acknowledge the issue, explain how to use the secure password reset flow, remind the customer not to share credentials, and set expectations for what to do if the reset email does not arrive or they remain locked out.",
+    "rubric": [
+      "shows empathy",
+      "directs the customer to the secure reset process",
+      "avoids asking for sensitive credentials"
+    ]
   }
 ]
 ```
 
-Notes:
+## Supabase schema notes
 
-- The script uses `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`
-- Run it from inside `customer-service-training`
-- If your `rubric` column is `jsonb`, passing the rubric array will store it correctly
+The app is intentionally tolerant of a leaner MVP schema, but these are the most useful columns to have.
+
+### `profiles`
+
+Minimum:
+
+- `id`
+
+Helpful optional columns:
+
+- `email`
+- `full_name`
+
+### `modules`
+
+Minimum:
+
+- `id`
+- `title`
+- `description`
+
+### `questions`
+
+Minimum:
+
+- `id`
+- `module_id`
+- `question_text`
+- `benchmark_answer`
+- `rubric`
+- `order_index`
+
+### `attempts`
+
+Minimum:
+
+- `user_id`
+- `question_id`
+- `score`
+- `created_at`
+
+At least one raw response column is strongly recommended:
+
+- `response_text`
+- or `trainee_answer`
+
+Helpful optional grading-detail columns:
+
+- `passed`
+- `rubric_scores`
+- `strengths`
+- `missed_points`
+- `feedback_to_agent`
+- `ideal_rewrite`
+- `module_id`
+
+### `module_progress`
+
+Minimum:
+
+- `user_id`
+- `module_id`
+
+Helpful optional columns:
+
+- `completed_questions`
+- `total_questions`
+- `average_score`
+- `last_question_id`
+- `status`
+- `last_attempted_at`
+- `completed_at`
+
+Recommended unique constraints:
+
+- `modules(title)`
+- `questions(module_id, question_text)`
+- `module_progress(user_id, module_id)`
 
 ## How grading works
 
@@ -123,16 +213,37 @@ The browser sends only:
 - `questionId`
 - `traineeAnswer`
 
-The server route:
+The server then:
 
-1. Looks up the real question, benchmark answer, and rubric from Supabase
-2. Sends them to Gemini on the server
-3. Validates the returned JSON
-4. Saves the attempt
-5. Updates module progress
-6. Returns feedback to the client
+1. loads `question_text`, `benchmark_answer`, and `rubric` from Supabase
+2. sends those fields plus `traineeAnswer` to Gemini
+3. validates the JSON response
+4. saves the attempt
+5. recalculates module progress
+6. returns structured feedback to the client
 
-This keeps benchmark answers and API keys out of the browser.
+Gemini is prompted to:
+
+- grade fairly
+- not punish different wording if the meaning is correct
+- prioritize empathy, professionalism, clarity, factual accuracy, and next steps
+- return valid JSON only
+
+Expected grading shape:
+
+```json
+{
+  "score": 88,
+  "passed": true,
+  "rubric_scores": {},
+  "strengths": [],
+  "missed_points": [],
+  "feedback_to_agent": "",
+  "ideal_rewrite": ""
+}
+```
+
+If Gemini returns invalid JSON, the app falls back to a friendly safe response instead of crashing the UI.
 
 ## Main routes
 
@@ -148,7 +259,21 @@ This app is structured for Vercel deployment:
 
 - App Router pages
 - Route handlers under `app/api`
-- No secret keys exposed to the client
-- Server-side Gemini grading
+- server-side Gemini grading
+- no secret keys exposed to the browser
 
 Add the same environment variables in Vercel before deploying.
+
+## Troubleshooting
+
+### Missing public env vars in the browser
+
+If you see an error about `NEXT_PUBLIC_SUPABASE_URL` or `NEXT_PUBLIC_SUPABASE_ANON_KEY`, make sure they exist in `customer-service-training/.env.local` and restart the dev server.
+
+### Seed script fails with RLS
+
+Check that `SUPABASE_SERVICE_ROLE_KEY` is the actual service-role key from Supabase project settings.
+
+### Questions or progress look wrong
+
+This app treats a question as completed only when the latest score for that question is `80` or higher.
