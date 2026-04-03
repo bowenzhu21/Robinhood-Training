@@ -1,5 +1,9 @@
 # Customer Service Training MVP
 
+Beta version for written evaluations.
+
+This app is currently the beta release of the customer service training platform and is intended for written evaluations. It provides response-writing assessments, AI grading, and progress tracking for the evaluation workflow.
+
 A premium dark internal training app for customer support agents built with Next.js App Router, TypeScript, Tailwind CSS, Supabase, and the Gemini API.
 
 ## What the app does
